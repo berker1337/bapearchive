@@ -1,0 +1,14 @@
+/* Logo.js */
+.logo {
+    text-align: center;
+    margin-top: 100px; /* Můžeš změnit podle potřeby */
+  }
+  
+  .logo-text {
+    font-family: 'Arial', sans-serif;
+    font-size: 60px;  /* Velikost textu loga */
+    font-weight: bold;
+    color: #333;  /* Barva textu */
+    letter-spacing: 2px;  /* Vzdálenost mezi písmeny */
+  }
+  

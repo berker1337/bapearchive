@@ -1,0 +1,34 @@
+.pdf-viewer {
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+  justify-content: flex-start;
+  height: 100vh;
+  background-color: white;
+  padding: 0;
+  margin: 0;
+}
+
+.pdf-container {
+  width: 80%;  /* Změň podle potřeby pro větší nebo menší zobrazení */
+  height: 90%; /* Nastav velikost dle potřeby */
+  overflow-y: auto;
+  display: flex;
+  flex-direction: column;
+  align-items: center;
+}
+
+.pdf-container .react-pdf__Page {
+  margin: 10px 0;
+}
+
+button.back-button {
+  position: absolute;
+  top: 20px;
+  left: 20px;
+  background-color: transparent;
+  border: none;
+  color: black;
+  font-size: 20px;
+  cursor: pointer;
+}
