@@ -5,7 +5,6 @@ const PDFViewer = ({ pdfSrc, title, onClose }) => {
   return (
     <div className="pdf-viewer">
       <button className="back-button" onClick={onClose}>Back</button>
-      {/* Název magazínu zůstává, ale odstraníme název stránky */}
       <h1>{title}</h1>
       <div className="pdf-container">
         <embed

@@ -1,101 +1,146 @@
-import React, { useState } from 'react';
+import React, { useState, useEffect } from 'react';
+import { gsap } from 'gsap';
 
 const MagazineGallery = ({ magazines, onSelect }) => {
-  // Stav pro filtraci podle sezóny a roku
-  const [seasonFilter, setSeasonFilter] = useState('');
-  const [yearFilter, setYearFilter] = useState('');
+  const [seasonFilters, setSeasonFilters] = useState([]);
+  const [yearFilters, setYearFilters] = useState([]);
 
-  // Filtrujeme magazíny podle sezóny a roku
-  const filteredMagazines = magazines.filter(magazine => {
-    const matchesSeason = seasonFilter ? magazine.title.toLowerCase().includes(seasonFilter.toLowerCase()) : true;
-    const matchesYear = yearFilter ? magazine.title.includes(yearFilter) : true;
+  const handleSeasonChange = (season) => {
+    setSeasonFilters((prev) =>
+      prev.includes(season)
+        ? prev.filter((item) => item !== season)
+        : [...prev, season]
+    );
+  };
+
+  const handleYearChange = (year) => {
+    setYearFilters((prev) =>
+      prev.includes(year)
+        ? prev.filter((item) => item !== year)
+        : [...prev, year]
+    );
+  };
+
+  const filteredMagazines = magazines.filter((magazine) => {
+    const matchesSeason =
+      seasonFilters.length === 0 ||
+      seasonFilters.some((season) =>
+        magazine.title.toLowerCase().includes(season.toLowerCase())
+      );
+    const matchesYear =
+      yearFilters.length === 0 || yearFilters.includes(magazine.title.slice(-4));
     return matchesSeason && matchesYear;
   });
 
-  return (
-    <div style={{ display: 'flex' }}>
-      {/* Filtrační panel */}
-      <div style={{ width: '250px', padding: '20px', backgroundColor: '#f4f4f4', borderRadius: '8px', marginRight: '20px' }}>
-        <h3 style={{ textAlign: 'center', marginBottom: '20px' }}>Filters</h3>
+  const handleMouseEnter = (e) => {
+    gsap.to(e.currentTarget, {
+      scale: 1.1,
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  };
 
-        {/* Filtr pro sezónu */}
-        <div style={{ marginBottom: '15px' }}>
-          <label htmlFor="season" style={{ display: 'block', marginBottom: '5px' }}>Season</label>
-          <select
-            id="season"
-            onChange={(e) => setSeasonFilter(e.target.value)}
-            value={seasonFilter}
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
-          >
-            <option value="">All</option>
-            <option value="Spring">Spring</option>
-            <option value="Summer">Summer</option>
-            <option value="Autumn">Autumn</option>
-            <option value="Winter">Winter</option>
-          </select>
+  const handleMouseLeave = (e) => {
+    gsap.to(e.currentTarget, {
+      scale: 1,
+      duration: 0.3,
+      ease: 'power2.out',
+    });
+  };
+
+  return (
+    <div style={{ display: 'flex', gap: '20px', padding: '20px' }}>
+      <div
+        style={{
+          width: '250px',
+          padding: '20px',
+          backgroundColor: '#f4f4f4',
+          borderRadius: '8px',
+          position: 'sticky',
+          top: 0,
+          height: 'fit-content',
+          boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+        }}
+      >
+        <h3 style={{ textAlign: 'center', marginBottom: '20px' }}>Filters</h3>
+        <div style={{ marginBottom: '20px' }}>
+          <h4 style={{ marginBottom: '10px' }}>Season</h4>
+          {['Spring', 'Summer', 'Autumn', 'Winter'].map((season) => (
+            <div key={season} style={{ marginBottom: '5px' }}>
+              <label>
+                <input
+                  type="checkbox"
+                  value={season}
+                  checked={seasonFilters.includes(season)}
+                  onChange={() => handleSeasonChange(season)}
+                  style={{ marginRight: '8px' }}
+                />
+                {season}
+              </label>
+            </div>
+          ))}
         </div>
 
-        {/* Filtr pro rok */}
+     
         <div>
-          <label htmlFor="year" style={{ display: 'block', marginBottom: '5px' }}>Year</label>
-          <select
-            id="year"
-            onChange={(e) => setYearFilter(e.target.value)}
-            value={yearFilter}
-            style={{ width: '100%', padding: '8px', borderRadius: '4px', border: '1px solid #ddd' }}
-          >
-            <option value="">All</option>
-            {Array.from({ length: 9 }, (_, i) => 2005 + i).map(year => (
-              <option key={year} value={year}>{year}</option>
-            ))}
-          </select>
+          <h4 style={{ marginBottom: '10px' }}>Year</h4>
+          {Array.from({ length: 9 }, (_, i) => 2005 + i).map((year) => (
+            <div key={year} style={{ marginBottom: '5px' }}>
+              <label>
+                <input
+                  type="checkbox"
+                  value={year}
+                  checked={yearFilters.includes(String(year))}
+                  onChange={() => handleYearChange(String(year))}
+                  style={{ marginRight: '8px' }}
+                />
+                {year}
+              </label>
+            </div>
+          ))}
         </div>
       </div>
 
-      {/* Galerie magazínů */}
-      <div style={{
-        display: 'flex',
-        flexWrap: 'wrap',
-        gap: '20px',
-        justifyContent: 'center',
-        flexGrow: 1,
-      }}>
-        {filteredMagazines.map((magazine) => (
-          <div
-            key={magazine.id}
-            onClick={() => onSelect(magazine)}
-            style={{
-              cursor: 'pointer',
-              textAlign: 'center',
-              padding: '10px',
-              borderRadius: '8px',
-              display: 'inline-block',
-              flexBasis: 'calc(33.33% - 20px)', // Zajištění max 3 položek na řádku s mezerou
-              boxSizing: 'border-box', // Aby se zahrnovala mezera do šířky
-            }}
-          >
-            <div
-              style={{
-                width: '200px',   // Nastavení pevné šířky pro všechny obrázky
-                height: '300px',  // Zvětšení výšky obrázku
-                overflow: 'hidden', // Skrytí přetékajících částí obrázku
-                borderRadius: '4px', // Zaoblení rohů
-                margin: '0 auto', // Vycentrování obrázku
-              }}
-            >
-              <img
-                src={magazine.image}
-                alt={magazine.title}
+  
+      <div style={{ flexGrow: 1 }}>
+        <div
+          style={{
+            display: 'grid',
+            gap: '15px',
+            gridTemplateColumns: 'repeat(4, 1fr)', 
+            justifyContent: 'center',
+          }}
+        >
+          {filteredMagazines.length > 0 ? (
+            filteredMagazines.map((magazine) => (
+              <div
+                key={magazine.id}
                 style={{
-                  width: '100%',  // Šířka obrázku se přizpůsobí velikosti kontejneru
-                  height: '100%', // Výška obrázku se přizpůsobí velikosti kontejneru
-                  objectFit: 'cover', // Pokrytí celého kontejneru bez deformace
+                  cursor: 'pointer',
+                  border: '1px solid #ddd',
+                  borderRadius: '8px',
+                  overflow: 'hidden',
+                  boxShadow: '0 4px 8px rgba(0, 0, 0, 0.1)',
+                  height: '400px', 
                 }}
-              />
-            </div>
-            <h3 style={{ marginTop: '10px', fontSize: '16px' }}>{magazine.title}</h3>
-          </div>
-        ))}
+                onClick={() => onSelect(magazine)}
+                onMouseEnter={handleMouseEnter}
+                onMouseLeave={handleMouseLeave}
+              >
+                <img
+                  src={magazine.image}
+                  alt={magazine.title}
+                  style={{ width: '100%', height: '70%', objectFit: 'cover' }}
+                />
+                <div style={{ padding: '8px', textAlign: 'center' }}>
+                  <h4 style={{ margin: '0', fontSize: '0.9em' }}>{magazine.title}</h4>
+                </div>
+              </div>
+            ))
+          ) : (
+            <p style={{ textAlign: 'center', marginTop: '20px' }}>No magazines found.</p>
+          )}
+        </div>
       </div>
     </div>
   );

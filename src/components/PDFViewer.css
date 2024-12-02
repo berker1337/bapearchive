@@ -10,8 +10,8 @@
 }
 
 .pdf-container {
-  width: 80%;  /* Změň podle potřeby pro větší nebo menší zobrazení */
-  height: 90%; /* Nastav velikost dle potřeby */
+  width: 80%;  
+  height: 90%; 
   overflow-y: auto;
   display: flex;
   flex-direction: column;
