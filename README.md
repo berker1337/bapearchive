@@ -1,3 +1,4 @@
+https://taleofmemories.vercel.app/
 
 ![Screenshot 1](https://github.com/berker1337/taleofmemories/blob/archive/public/assets/screen1.png)
 
